@@ -17,8 +17,8 @@ private:
     ////
 
     // data handles (owned)
-    std::vector<GraphNode *> _nodes;
-    std::vector<GraphEdge *> _edges;
+    std::vector<std::unique_ptr<GraphNode>> _nodes;
+    // std::vector<std::unique_ptr<GraphEdge>> _edges;
 
     ////
     //// EOF STUDENT CODE
@@ -45,8 +45,11 @@ public:
     void SetChatbotHandle(ChatBot *chatbot);
 
     // proprietary functions
+    // ファイルから答えをloadしてgraph作成
     void LoadAnswerGraphFromFile(std::string filename);
+    // chatbotにメッセージをおくり, chatbotのreceiveでうけとりレーベンシュタイン距離によってnodeが選択される
     void SendMessageToChatbot(std::string message);
+    // panel dialogwにitemを追加して表示
     void SendMessageToUser(std::string message);
     wxBitmap *GetImageFromChatbot();
 };

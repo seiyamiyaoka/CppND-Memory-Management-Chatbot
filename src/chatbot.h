@@ -26,6 +26,9 @@ public:
     ChatBot();                     // constructor WITHOUT memory allocation
     ChatBot(std::string filename); // constructor WITH memory allocation
     ~ChatBot();
+    ChatBot(const ChatBot &chatbot); // copy constructor
+    ChatBot(ChatBot &&chatbot); // move constructor
+    ChatBot &operator=(ChatBot &&chatbot); // assign operator
 
     //// STUDENT CODE
     ////
@@ -36,8 +39,10 @@ public:
     // getters / setters
     void SetCurrentNode(GraphNode *node);
     void SetRootNode(GraphNode *rootNode) { _rootNode = rootNode; }
-    void SetChatLogicHandle(ChatLogic *chatLogic) { _chatLogic = chatLogic; }
-    ChatLogic* GetChatLogicHandle() { return _chatLogic; }
+    void SetChatLogicHandle(ChatLogic* chatLogic);
+    ChatLogic* GetChatLogicHandle() {
+      return _chatLogic;
+    }
     wxBitmap *GetImageHandle() { return _image; }
 
     // communication

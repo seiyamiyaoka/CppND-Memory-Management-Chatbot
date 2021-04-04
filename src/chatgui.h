@@ -1,6 +1,6 @@
 #ifndef CHATGUI_H_
 #define CHATGUI_H_
-
+#include <memory>
 #include <wx/wx.h>
 
 class ChatLogic; // forward declaration
@@ -9,14 +9,14 @@ class ChatLogic; // forward declaration
 class ChatBotPanelDialog : public wxScrolledWindow
 {
 private:
-    // control elements
+    // control elements, _dialogSizerは配列かもしれん
     wxBoxSizer *_dialogSizer;
     wxBitmap _image;
 
     //// STUDENT CODE
     ////
-
-    ChatLogic *_chatLogic;
+    // panel dialogとchat botで共有されているからshared_ptrに設定
+    std::shared_ptr<ChatLogic> _chatLogic;
 
     ////
     //// EOF STUDENT CODE
@@ -27,7 +27,10 @@ public:
     ~ChatBotPanelDialog();
 
     // getter / setter
-    ChatLogic *GetChatLogicHandle() { return _chatLogic; }
+    std::shared_ptr<ChatLogic> GetChatLogicHandle() {
+      std::cout << _chatLogic << std::endl;
+      return _chatLogic;
+    }
 
     // events
     void paintEvent(wxPaintEvent &evt);

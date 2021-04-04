@@ -21,7 +21,6 @@ ChatBot::ChatBot()
 ChatBot::ChatBot(std::string filename)
 {
     std::cout << "ChatBot Constructor" << std::endl;
-    
     // invalidate data handles
     _chatLogic = nullptr;
     _rootNode = nullptr;
@@ -33,7 +32,6 @@ ChatBot::ChatBot(std::string filename)
 ChatBot::~ChatBot()
 {
     std::cout << "ChatBot Destructor" << std::endl;
-
     // deallocate heap memory
     if(_image != NULL) // Attention: wxWidgets used NULL and not nullptr
     {
@@ -41,10 +39,56 @@ ChatBot::~ChatBot()
         _image = NULL;
     }
 }
-
 //// STUDENT CODE
 ////
+ChatBot::ChatBot(const ChatBot &chatbot)
+{
+    std::cout << "ChatBot Copy Constructor(deep copy)" << std::endl;
+    _image = new wxBitmap(*chatbot._image);
+    _chatLogic = chatbot._chatLogic;
+    _chatLogic->SetChatbotHandle(this);
+    _rootNode = chatbot._rootNode;
+    _currentNode = chatbot._currentNode;
+}
 
+ChatBot::ChatBot(ChatBot &&chatbot)
+{
+    std::cout << "move ChatBot" << std::endl;
+    _image = chatbot._image;
+    _currentNode = chatbot._currentNode;
+    _rootNode = chatbot._rootNode;
+    _chatLogic = chatbot._chatLogic;
+    _chatLogic->SetChatbotHandle(this);
+
+    chatbot._image = nullptr;
+    chatbot._currentNode = nullptr;
+    chatbot._rootNode = nullptr;
+    chatbot._chatLogic = nullptr;
+}
+
+ChatBot& ChatBot::operator=(ChatBot&& chatbot)
+{
+    std::cout << "ASSIGNING chatbotinstance" << std::endl;
+
+    _image = chatbot._image;
+    _currentNode = chatbot._currentNode;
+    _rootNode = chatbot._rootNode;
+    _chatLogic = chatbot._chatLogic;
+    _chatLogic->SetChatbotHandle(this);
+
+    chatbot._image = nullptr;
+    chatbot._currentNode = nullptr;
+    chatbot._rootNode = nullptr;
+    chatbot._chatLogic = nullptr;
+
+    return *this;
+}
+
+// https://qiita.com/false-git@github/items/79bf1b6acc00dc43d173
+// サイズが必要なものはcppに配置する
+void ChatBot::SetChatLogicHandle(ChatLogic* chatLogic) {
+    _chatLogic = chatLogic;
+}
 ////
 //// EOF STUDENT CODE
 
@@ -53,7 +97,6 @@ void ChatBot::ReceiveMessageFromUser(std::string message)
     // loop over all edges and keywords and compute Levenshtein distance to query
     typedef std::pair<GraphEdge *, int> EdgeDist;
     std::vector<EdgeDist> levDists; // format is <ptr,levDist>
-
     for (size_t i = 0; i < _currentNode->GetNumberOfChildEdges(); ++i)
     {
         GraphEdge *edge = _currentNode->GetChildEdgeAtIndex(i);
@@ -63,7 +106,6 @@ void ChatBot::ReceiveMessageFromUser(std::string message)
             levDists.push_back(ed);
         }
     }
-
     // select best fitting edge to proceed along
     GraphNode *newNode;
     if (levDists.size() > 0)
@@ -94,6 +136,7 @@ void ChatBot::SetCurrentNode(GraphNode *node)
     std::string answer = answers.at(dis(generator));
 
     // send selected node answer to user
+    std::cout << "chat botからuserにメッセージ送信: " << _chatLogic << std::endl;
     _chatLogic->SendMessageToUser(answer);
 }
 
