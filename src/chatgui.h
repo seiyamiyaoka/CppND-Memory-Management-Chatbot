@@ -28,7 +28,6 @@ public:
 
     // getter / setter
     std::shared_ptr<ChatLogic> GetChatLogicHandle() {
-      std::cout << _chatLogic << std::endl;
       return _chatLogic;
     }
 

@@ -136,7 +136,6 @@ void ChatBot::SetCurrentNode(GraphNode *node)
     std::string answer = answers.at(dis(generator));
 
     // send selected node answer to user
-    std::cout << "chat botからuserにメッセージ送信: " << _chatLogic << std::endl;
     _chatLogic->SendMessageToUser(answer);
 }
 
